@@ -10,17 +10,16 @@ import android.net.Uri;
 public class PodcastProviderContract {
 
     public static final String _ID = "_id";
-    public static final String TITLE = "nome";
-    public static final String DATE = "cpf";
-    public static final String DESCRIPTION = "email";
-    public static final String EPISODE_LINK = "media";
-    public static final String DOWNLOAD_LINK = "media";
-    public static final String EPISODE_URI = "media";
+    public static final String EPISODE_TITLE = "title";
+    public static final String EPISODE_DATE = "pubDate";
+    public static final String EPISODE_LINK = "link";
+    public static final String EPISODE_DESC = "description";
+    public static final String EPISODE_DOWNLOAD_LINK = "downloadLink";
+    public static final String EPISODE_FILE_URI = "downloadUri";
     public static final String EPISODE_TABLE = "episodes";
 
-
     public final static String[] ALL_COLUMNS = {
-            _ID, TITLE, DATE, EPISODE_LINK, DESCRIPTION, DOWNLOAD_LINK, EPISODE_URI};
+            _ID, EPISODE_TITLE, EPISODE_DATE, EPISODE_LINK, EPISODE_DESC, EPISODE_DOWNLOAD_LINK, EPISODE_FILE_URI};
 
     private static final Uri BASE_LIST_URI = Uri.parse("content://br.ufpe.cin.if710.podcast.feed/");
     //URI para tabela
