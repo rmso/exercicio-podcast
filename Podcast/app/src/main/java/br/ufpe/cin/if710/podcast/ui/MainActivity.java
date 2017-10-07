@@ -1,9 +1,12 @@
 package br.ufpe.cin.if710.podcast.ui;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufpe.cin.if710.podcast.R;
+import br.ufpe.cin.if710.podcast.db.PodcastDBHelper;
+import br.ufpe.cin.if710.podcast.db.PodcastProvider;
+import br.ufpe.cin.if710.podcast.db.PodcastProviderContract;
 import br.ufpe.cin.if710.podcast.domain.ItemFeed;
 import br.ufpe.cin.if710.podcast.domain.XmlFeedParser;
 import br.ufpe.cin.if710.podcast.ui.adapter.XmlFeedAdapter;
@@ -33,6 +39,7 @@ public class MainActivity extends Activity {
     //TODO teste com outros links de podcast
 
     private ListView items;
+    PodcastProvider podcastProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         items = (ListView) findViewById(R.id.items);
+        podcastProvider = new PodcastProvider();
     }
 
     @Override
@@ -87,6 +95,23 @@ public class MainActivity extends Activity {
             List<ItemFeed> itemList = new ArrayList<>();
             try {
                 itemList = XmlFeedParser.parse(getRssFeed(params[0]));
+
+                for (ItemFeed itemFeed : itemList){
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(PodcastDBHelper.EPISODE_TITLE, itemFeed.getTitle());
+                    contentValues.put(PodcastDBHelper.EPISODE_DATE, itemFeed.getPubDate());
+                    contentValues.put(PodcastDBHelper.EPISODE_LINK, itemFeed.getLink());
+                    contentValues.put(PodcastDBHelper.EPISODE_DESC, itemFeed.getDescription());
+                    contentValues.put(PodcastDBHelper.EPISODE_DOWNLOAD_LINK, itemFeed.getDownloadLink());
+                    contentValues.put(PodcastDBHelper.EPISODE_FILE_URI, "");
+                    Uri uri = getContentResolver().insert(PodcastProviderContract.EPISODE_LIST_URI, contentValues);
+
+                    if(uri != null){
+                        Log.d("ItemList", "Item foi adicionado");
+                    } else {
+                        Log.e("ItemLis", "Falha ao adicionar o item de titulo " +itemFeed.getTitle());
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (XmlPullParserException e) {
