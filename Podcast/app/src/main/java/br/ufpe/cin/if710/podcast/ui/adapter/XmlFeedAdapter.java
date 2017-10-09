@@ -1,7 +1,10 @@
 package br.ufpe.cin.if710.podcast.ui.adapter;
 
+import java.util.Deque;
 import java.util.List;
 import android.content.Context;
+import android.content.Intent;
+import android.net.NetworkInfo;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -9,6 +12,8 @@ import android.widget.TextView;
 
 import br.ufpe.cin.if710.podcast.R;
 import br.ufpe.cin.if710.podcast.domain.ItemFeed;
+import br.ufpe.cin.if710.podcast.ui.EpisodeDetailActivity;
+import br.ufpe.cin.if710.podcast.ui.MainActivity;
 
 public class XmlFeedAdapter extends ArrayAdapter<ItemFeed> {
 
@@ -52,7 +57,7 @@ public class XmlFeedAdapter extends ArrayAdapter<ItemFeed> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = View.inflate(getContext(), linkResource, null);
@@ -65,6 +70,19 @@ public class XmlFeedAdapter extends ArrayAdapter<ItemFeed> {
         }
         holder.item_title.setText(getItem(position).getTitle());
         holder.item_date.setText(getItem(position).getPubDate());
+
+        holder.item_title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), EpisodeDetailActivity.class);
+                ItemFeed itemFeed = getItem(position);
+                intent.putExtra("itemFeed", itemFeed);
+
+                getContext().startActivity(intent);
+
+            }
+        });
+
         return convertView;
     }
 }
